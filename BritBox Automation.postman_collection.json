@@ -1,0 +1,292 @@
+{
+	"info": {
+		"name": "BritBox Automation",
+		"_postman_id": "83a8b425-cecb-a677-d06e-fb5c4f457307",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"var accountToken = jsonData[0].value;",
+							"pm.environment.set(\"accountToken\", accountToken);",
+							"",
+							"var settingsToken = jsonData[3].value;",
+							"pm.environment.set(\"settingsToken\", settingsToken);",
+							"",
+							"var profileCheckToken = jsonData[1].value;",
+							"pm.environment.set(\"profileCheckToken\", profileCheckToken);",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Host",
+						"value": "test-rocket.bbc-massive.com"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Origin",
+						"value": "https://test.bbc-massive.com"
+					},
+					{
+						"key": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Referer",
+						"value": "https://test.bbc-massive.com/cz/"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\":\"{{param-email}}\",\n\t\"password\":\"{{param-password}}\",\n\t\"scopes\":[\"Catalog\",\"Settings\"],\n\t\"cookieType\":\"Persistent\"\n}"
+				},
+				"url": {
+					"raw": "{{const-rocketUrl}}/authorization",
+					"host": [
+						"{{const-rocketUrl}}"
+					],
+					"path": [
+						"authorization"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "open account",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accountToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Connection",
+						"value": "keep-alive"
+					},
+					{
+						"key": "Host",
+						"value": "test-rocket.bbc-massive.com"
+					},
+					{
+						"key": "Origin",
+						"value": "https://test.bbc-massive.com"
+					},
+					{
+						"key": "Referer",
+						"value": "https://test.bbc-massive.com/cz/account/parental-controls"
+					},
+					{
+						"key": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36"
+					},
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "{{const-rocketUrl}}/account",
+					"host": [
+						"{{const-rocketUrl}}"
+					],
+					"path": [
+						"account"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "profile changes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{settingsToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Connection",
+						"value": "keep-alive"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Host",
+						"value": "test-rocket.bbc-massive.com"
+					},
+					{
+						"key": "Origin",
+						"value": "https://test.bbc-massive.com"
+					},
+					{
+						"key": "Pragma",
+						"value": "no-cache"
+					},
+					{
+						"key": "Referer",
+						"value": "https://test.bbc-massive.com/cz/account/parental-controls"
+					},
+					{
+						"key": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"pin\": \"1111\",\r\n        \"minRatingPlaybackGuardCode\": \"{{const-rating}}\"\r\n    }\r\n    "
+				},
+				"url": {
+					"raw": "{{const-rocketUrl}}/account/profile",
+					"host": [
+						"{{const-rocketUrl}}"
+					],
+					"path": [
+						"account",
+						"profile"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "profile check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"var rating = jsonData.minRatingPlaybackGuard.code;",
+							"var newRating = pm.environment.get(\"const-rating\");",
+							"",
+							"pm.test(\"Rating was updated\", function () {",
+							"    pm.expect(rating).to.eql(newRating);",
+							"});",
+							"",
+							"",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{profileCheckToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Host",
+						"value": "test-rocket.bbc-massive.com"
+					},
+					{
+						"key": "Origin",
+						"value": "https://test.bbc-massive.com"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "{{const-rocketUrl}}/account/profile",
+					"host": [
+						"{{const-rocketUrl}}"
+					],
+					"path": [
+						"account",
+						"profile"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
